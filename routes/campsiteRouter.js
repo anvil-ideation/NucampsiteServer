@@ -168,8 +168,6 @@ campsiteRouter.route('/:campsiteId/comments/:commentId')
 .put(authenticate.verifyUser, (req, res, next) => {
     Campsite.findById(req.params.campsiteId)
     .then(campsite => {
-        console.log(campsite.comments.id(req.params.commentId).author._id);
-        console.log(req.user._id);
         if(campsite.comments.id(req.params.commentId).author._id.toString() === req.user._id.toString()) {
             if(campsite && campsite.comments.id(req.params.commentId)) {
                 if(req.body.rating) {
