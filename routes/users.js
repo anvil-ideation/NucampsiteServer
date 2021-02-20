@@ -19,8 +19,6 @@ router
     .catch(err => next(err));
 });
 
-
-
 router
 .post('/signup', cors.corsWithOptions, (req, res) => {
     User.register(

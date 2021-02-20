@@ -48,27 +48,29 @@ favoriteRouter.route('/')
             })
         } else {
             Favorite.create({user: req.user._id})
-            req.body.forEach(campsiteId => {
-                Campsite.exists({ _id: campsiteId}, (err, result) => {
-                    if (result === true) {
-                        if (favorite.campsite.includes(campsiteId._id) === false) {
-                            console.log(`New favorite added: Campsite ${campsiteId._id}`);
-                            favorite.campsite.push(campsiteId._id);
-                        } else {
-                            console.log(`Campsite ${campsiteId._id} is already a favorite`);
-                        }
-                    } else {
-                        console.log(`Campsite ${campsiteId._id} does not exist`);
-                    }
-                });
-            });
-            favorite.save()
             .then(favorite => {
+                req.body.forEach(campsiteId => {
+                    Campsite.exists({ _id: campsiteId}, (err, result) => {
+                        if (result === true) {
+                            if (favorite.campsite.includes(campsiteId._id) === false) {
+                                console.log(`New favorite added: Campsite ${campsiteId._id}`);
+                                favorite.campsite.push(campsiteId._id);
+                            } else {
+                                console.log(`Campsite ${campsiteId._id} is already a favorite`);
+                            }
+                        } else {
+                            console.log(`Campsite ${campsiteId._id} does not exist`);
+                        }
+                    });
+                });
                 favorite.save()
-                console.log('Favorites document created');
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(favorite);
+                .then(favorite => {
+                    favorite.save()
+                    console.log('Favorites document updated');
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(favorite);
+                })
             })
             .catch(err => next(err));
         }
